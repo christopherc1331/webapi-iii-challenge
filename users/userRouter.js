@@ -18,7 +18,25 @@ router.post("/", (req, res) => {
     );
 });
 
-router.post("/:id/posts", (req, res) => {});
+router.post("/:id/posts", (req, res) => {
+  const { id } = req.params;
+  req.body.user_id = id;
+  const newPost = req.body;
+
+  postsDb
+    .insert(newPost)
+    .then(addedPost => {
+      res.status(201).json({ success: true, addedPost });
+    })
+    .catch(err =>
+      res
+        .status(400)
+        .json({
+          success: false,
+          message: "Thepost could not be added to the server"
+        })
+    );
+});
 
 router.get("/", (req, res) => {
   userDb
