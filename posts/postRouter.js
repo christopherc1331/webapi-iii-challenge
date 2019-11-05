@@ -24,7 +24,18 @@ router.get("/:id", (req, res) => {
     .catch(err => res.status(400).json({ success: false, err }));
 });
 
-router.delete("/:id", (req, res) => {});
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  postsDb
+    .remove(id)
+    .then(removedPost =>
+      res
+        .status(200)
+        .json({ success: true, message: "Post deleted successfully" })
+    )
+    .catch(err => res.status(400).json({ success: false, err }));
+});
 
 router.put("/:id", (req, res) => {});
 
