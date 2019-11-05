@@ -29,12 +29,10 @@ router.post("/:id/posts", (req, res) => {
       res.status(201).json({ success: true, addedPost });
     })
     .catch(err =>
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "Thepost could not be added to the server"
-        })
+      res.status(400).json({
+        success: false,
+        message: "Thepost could not be added to the server"
+      })
     );
 });
 
@@ -51,8 +49,9 @@ router.get("/:id", (req, res) => {
   const { id } = req.params;
 
   userDb
-    .get(id)
+    .getById(id)
     .then(user => {
+      console.log(user);
       res.status(200).json(user);
     })
     .catch(err => res.status(400).json({ success: false, err }));
@@ -98,10 +97,32 @@ router.put("/:id", (req, res) => {
 
 //custom middleware
 
-function validateUserId(req, res, next) {}
+function validateUserId(req, res, next) {
+  const { id } = req.params;
+  console.log("id from validation", `"${id}"`);
+  if (id !== "" && id !== undefined) {
+    userDb
+      .getById(id)
+      .then(user => {
+        if (user == undefined) {
+          res.status(400).json({ success: false, message: "invalid user id" });
+        } else {
+          req.user = user;
+          next();
+        }
+      })
+      .catch(err =>
+        res.status(400).json({ success: false, message: "Error with server" })
+      );
+  } else {
+    res
+      .status(400)
+      .json({ success: false, message: "No id passed into params" });
+  }
+}
 
 function validateUser(req, res, next) {}
 
 function validatePost(req, res, next) {}
 
-module.exports = router;
+module.exports = { router, validateUserId };

@@ -49,6 +49,8 @@ router.put("/:id", (req, res) => {
 
 // custom middleware
 
-function validatePostId(req, res, next) {}
+function validatePostId(req, res, next) {
+  const { id } = req.params;
+}
 
 module.exports = router;
