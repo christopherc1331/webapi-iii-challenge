@@ -51,7 +51,18 @@ router.get("/:id/posts", (req, res) => {
     .catch(err => res.status(400).json({ success: false, err }));
 });
 
-router.delete("/:id", (req, res) => {});
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  userDb
+    .remove(id)
+    .then(user => {
+      res
+        .status(200)
+        .json({ success: true, message: "User successfully deleted" });
+    })
+    .catch(err => res.status(404).json({ message: "User ID not found" }));
+});
 
 router.put("/:id", (req, res) => {});
 
