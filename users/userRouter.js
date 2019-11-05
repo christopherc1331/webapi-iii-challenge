@@ -64,7 +64,19 @@ router.delete("/:id", (req, res) => {
     .catch(err => res.status(404).json({ message: "User ID not found" }));
 });
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const newUserInfo = req.body;
+
+  userDb
+    .update(id, newUserInfo)
+    .then(newUser => res.status(201).json({ success: true, newUser }))
+    .catch(err =>
+      res
+        .status(400)
+        .json({ success: false, message: "User could not be added to server" })
+    );
+});
 
 //custom middleware
 
