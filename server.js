@@ -1,6 +1,7 @@
 const express = require("express");
 const helmet = require("helmet");
 const userRouter = require("./users/userRouter.js");
+const postsRouter = require("./posts/postRouter.js");
 
 const server = express();
 
@@ -11,6 +12,7 @@ server.get("/", (req, res) => {
   res.send(`<h2>Let's write some middleware!</h2>`);
 });
 server.use("/api/users", userRouter);
+server.use("/api/posts", postsRouter);
 
 //custom middleware
 
