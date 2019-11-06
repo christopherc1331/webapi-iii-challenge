@@ -47,6 +47,7 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
+  console.log("id from val", id);
 
   userDb
     .getById(id)
@@ -99,25 +100,34 @@ router.put("/:id", (req, res) => {
 
 function validateUserId(req, res, next) {
   const { id } = req.params;
-  console.log("id from validation", `"${id}"`);
-  if (id !== "" && id !== undefined) {
-    userDb
-      .getById(id)
-      .then(user => {
-        if (user == undefined) {
-          res.status(400).json({ success: false, message: "invalid user id" });
-        } else {
-          req.user = user;
-          next();
-        }
-      })
-      .catch(err =>
-        res.status(400).json({ success: false, message: "Error with server" })
-      );
+  const path = req.originalUrl;
+  console.log("id from val", id);
+
+  if (path == "/api/users/") {
+    next();
   } else {
-    res
-      .status(400)
-      .json({ success: false, message: "No id passed into params" });
+    console.log("id from else", id);
+    if (id) {
+      userDb
+        .getById(id)
+        .then(user => {
+          if (user == undefined) {
+            res
+              .status(400)
+              .json({ success: false, message: "invalid user id" });
+          } else {
+            req.user = user;
+            next();
+          }
+        })
+        .catch(err =>
+          res.status(400).json({ success: false, message: "Error with server" })
+        );
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "No id passed into params" });
+    }
   }
 }
 

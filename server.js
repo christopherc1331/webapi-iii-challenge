@@ -11,7 +11,7 @@ server.use(logger);
 server.get("/", (req, res) => {
   res.send(`<h2>Let's write some middleware!</h2>`);
 });
-server.use("/api/users", userRouter.validateUserId);
+server.use("/api/users/:id", userRouter.validateUserId);
 server.use("/api/users", userRouter.router);
 server.use("/api/posts", postsRouter);
 
