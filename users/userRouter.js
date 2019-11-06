@@ -22,18 +22,19 @@ router.post("/:id/posts", (req, res) => {
   const { id } = req.params;
   req.body.user_id = id;
   const newPost = req.body;
-
+  console.log("routing to id posts");
   postsDb
     .insert(newPost)
     .then(addedPost => {
       res.status(201).json({ success: true, addedPost });
     })
-    .catch(err =>
+    .catch(err => {
+      console.log("caught an error at the catch");
       res.status(400).json({
         success: false,
-        message: "Thepost could not be added to the server"
-      })
-    );
+        message: "The post could not be added to the server"
+      });
+    });
 });
 
 router.get("/", (req, res) => {
@@ -47,7 +48,6 @@ router.get("/", (req, res) => {
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
-  console.log("id from val", id);
 
   userDb
     .getById(id)
@@ -99,9 +99,9 @@ router.put("/:id", (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
+  console.log("Validating user id");
   const { id } = req.params;
   const path = req.originalUrl;
-  console.log("id from val", id);
 
   if (path == "/api/users/") {
     next();
@@ -131,8 +131,19 @@ function validateUserId(req, res, next) {
   }
 }
 
-function validateUser(req, res, next) {}
+function validateUser(req, res, next) {
+  console.log("Validating User");
+  const newUser = req.body;
+  console.log("new user from val", newUser);
+
+  if (Object.entries(newUser).length === 0) {
+    res.status(400).json({ success: false, message: "missing user data" });
+  } else {
+    console.log("newUser from else", newUser);
+    next();
+  }
+}
 
 function validatePost(req, res, next) {}
 
-module.exports = { router, validateUserId };
+module.exports = { router, validateUserId, validateUser, validatePost };
