@@ -132,11 +132,14 @@ function validateUserId(req, res, next) {
 }
 
 function validateUser(req, res, next) {
-  console.log("Validating User");
   const newUser = req.body;
-  console.log("new user from val", newUser);
-
-  if (Object.entries(newUser).length === 0) {
+  const reqType = req.method;
+  const pathName = req.originalUrl;
+  if (
+    Object.entries(newUser).length === 0 &&
+    reqType === "POST" &&
+    pathName === "/api/users"
+  ) {
     res.status(400).json({ success: false, message: "missing user data" });
   } else {
     console.log("newUser from else", newUser);
@@ -144,6 +147,15 @@ function validateUser(req, res, next) {
   }
 }
 
-function validatePost(req, res, next) {}
+function validatePost(req, res, next) {
+  const newPost = req.body;
+  const reqType = req.method;
+
+  if (Object.entries(newPost).length === 0 && reqType === "POST") {
+    res.status(400).json({ success: false, message: "missing post data" });
+  } else {
+    next();
+  }
+}
 
 module.exports = { router, validateUserId, validateUser, validatePost };
